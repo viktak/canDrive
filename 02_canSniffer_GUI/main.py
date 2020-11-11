@@ -475,6 +475,7 @@ class canSnifferGUI(QMainWindow, canSniffer_ui.Ui_MainWindow):
             print('Error closing port: ' + str(e))
 
     def scanPorts(self):
+        self.portSelectorComboBox.clear()
         comPorts = serial.tools.list_ports.comports()
         nameList = list(port.device for port in comPorts)
         for name in nameList:
