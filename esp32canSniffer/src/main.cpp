@@ -21,8 +21,8 @@
 #include <CAN.h>
 //------------------------------------------------------------------------------
 // Settings
-#define RANDOM_CAN 1
-#define CAN_SPEED (33E3) //LOW=33E3, MID=95E3, HIGH=500E3 (for Vectra)
+#define RANDOM_CAN 0
+#define CAN_SPEED (500E3) //LOW=33E3, MID=95E3, HIGH=500E3 (for Vectra)
 //------------------------------------------------------------------------------
 // Inits, globals
 typedef struct {
@@ -46,6 +46,9 @@ void printHex(int num) {
 }
 
 void printPacket(packet_t * packet) {
+
+  digitalWrite(2, LOW);
+
   // packet format (hex string): [ID],[RTR],[IDE],[DATABYTES 0..8B]\n
   // example: 014A,00,00,1A002B003C004D\n
   printHex(packet->id);
@@ -59,6 +62,9 @@ void printPacket(packet_t * packet) {
     printHex(packet->dataArray[i]);
   }
   Serial.print(TERMINATOR);
+
+  digitalWrite(2, HIGH);
+
 }
 //------------------------------------------------------------------------------
 // CAN packet simulator
@@ -185,10 +191,17 @@ void RXcallback(void) {
 //------------------------------------------------------------------------------
 // Setup
 void setup() {
-  Serial.begin(250000);
+  Serial.begin(921600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+
+    //  GPIOs
+    //  outputs
+
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+
 
 #if RANDOM_CAN == 1
   randomSeed(12345);
